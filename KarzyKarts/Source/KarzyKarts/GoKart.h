@@ -22,7 +22,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
@@ -34,11 +34,27 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MaxDrivingForce = 10000;
 
+	//The number of degrees rotated per second at full control throw (degrees/s).
+	UPROPERTY(EditAnywhere)
+	float MaxDegreesPerSeconds = 90;
+
+	//Higher means more drag
+	UPROPERTY(EditAnywhere)
+	float DragCoefficient = 16;
+
 	FVector Velocity = FVector::ZeroVector;
 
 	float Throttle;
 
+	float SteeringThrow;
+
+	FVector GetResistance();
+
 	void MoveForward(float Value);
 
+	void MoveRight(float Value);
+
 	void UpdateLocationFromVelocity(float DeltaTime);
+
+	void ApplyRotation(float DeltaTime);
 };

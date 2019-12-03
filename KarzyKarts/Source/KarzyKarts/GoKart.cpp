@@ -25,13 +25,28 @@ void AGoKart::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	FVector Force = MaxDrivingForce * Throttle * GetActorForwardVector();
-	
+
+	Force += GetResistance();
+
 	FVector Acceleration = Force / Mass;
 
 	Velocity += Acceleration * DeltaTime;
 
+	ApplyRotation(DeltaTime);
+
 	UpdateLocationFromVelocity(DeltaTime);
 
+}
+
+void AGoKart::ApplyRotation(float DeltaTime)
+{
+	float RotationAngle = MaxDegreesPerSeconds * DeltaTime * SteeringThrow;
+
+	FQuat RotationDelta(GetActorUpVector(), FMath::DegreesToRadians(RotationAngle));
+
+	Velocity = RotationDelta.RotateVector(Velocity);
+
+	AddActorWorldRotation(RotationDelta);
 }
 
 void AGoKart::UpdateLocationFromVelocity(float DeltaTime)
@@ -40,7 +55,7 @@ void AGoKart::UpdateLocationFromVelocity(float DeltaTime)
 
 	FHitResult  Hit;
 
-	AddActorLocalOffset(Translation, true, &Hit);
+	AddActorWorldOffset(Translation, true, &Hit);
 
 	if (Hit.IsValidBlockingHit())
 	{
@@ -53,10 +68,21 @@ void AGoKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis("MoveForward", this, &AGoKart::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AGoKart::MoveRight);
+}
+
+FVector AGoKart::GetResistance()
+{
+	return -Velocity.GetSafeNormal() * Velocity.SizeSquared() * DragCoefficient;
 }
 
 void AGoKart::MoveForward(float Value)
 {
 	Throttle = Value;
+}
+
+void AGoKart::MoveRight(float Value)
+{
+	SteeringThrow = Value;
 }
 
