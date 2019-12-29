@@ -85,7 +85,9 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_ServerState)
 	FGoKartState ServerState;
 
-	void SimulateMove(FGoKartMove Move);
+	TArray<FGoKartMove> UnacknowloegedMoves;
+
+	void SimulateMove(const FGoKartMove& Move);
 
 	UFUNCTION()
 	void OnRep_ServerState();
@@ -103,4 +105,8 @@ private:
 	void UpdateLocationFromVelocity(float DeltaTime);
 
 	void ApplyRotation(float DeltaTime, float SteeringThrow);
+
+	FGoKartMove CreateMove(float DeltaTime);
+
+	void ClearAcknowledgedMoves(FGoKartMove LastMove);
 };
