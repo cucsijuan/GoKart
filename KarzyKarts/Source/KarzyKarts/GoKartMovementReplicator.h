@@ -51,6 +51,8 @@ private:
 
 	FTransform ClientStartTransform;
 
+	FVector ClientStartVelocity;
+
 	void ClientTick(float DeltaTime);
 
 	UFUNCTION(Server, Reliable, WithValidation)
