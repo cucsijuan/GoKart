@@ -45,11 +45,25 @@ private:
 
 	TArray<FGoKartMove> UnacknowloegedMoves;
 
+	float ClientTimesinceUpdate;
+
+	float ClientTimeBetweenLastUpdates;
+
+	FVector ClientStartLocation;
+
+	void ClientTick(float DeltaTime);
+
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_SendMove(FGoKartMove Move);
 
 	UFUNCTION()
 	void OnRep_ServerState();
+
+	UFUNCTION()
+	void SimulatedProxy_OnRep_ServerState();
+
+	UFUNCTION()
+	void AutonomousProxy_OnRep_ServerState();
 
 	void ClearAcknowledgedMoves(FGoKartMove LastMove);
 		
