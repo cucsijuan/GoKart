@@ -35,17 +35,16 @@ public:
 	FVector GetVelocity() { return Velocity; }
 
 	void SetThrottle(float InThrottle) { Throttle = InThrottle; }
-	float GetThrottle() { return Throttle; }
 
 	void SetSteeringThrow(float InSteeringThrow) { SteeringThrow = InSteeringThrow; }
 	float GetSteeringThrow() { return SteeringThrow; }
+
+	FGoKartMove GetLastMove() { return LastMove; }
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void SimulateMove(const FGoKartMove& Move);
-
-	FGoKartMove CreateMove(float DeltaTime);
 
 protected:
 	// Called when the game starts
@@ -74,10 +73,14 @@ private:
 
 	FVector Velocity = FVector::ZeroVector;
 
+	FGoKartMove LastMove;
+
 	UPROPERTY()
 	float Throttle;
 
 	float SteeringThrow;
+
+	FGoKartMove CreateMove(float DeltaTime);
 
 	FVector GetAirResistance();
 
