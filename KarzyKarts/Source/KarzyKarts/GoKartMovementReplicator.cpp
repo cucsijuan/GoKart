@@ -1,6 +1,8 @@
 #include "GoKartMovementReplicator.h"
 #include "UnrealNetwork.h"
 #include "GameFramework/Actor.h"
+#include "Engine/World.h"
+#include "GameFramework/GameStateBase.h"
 
 
 UGoKartMovementReplicator::UGoKartMovementReplicator()
@@ -189,6 +191,7 @@ void UGoKartMovementReplicator::Server_SendMove_Implementation(FGoKartMove Move)
 {
 	if (MovementComponent == nullptr) return;
 
+	CLientSimulatedTime += Move.DeltaTime;
 	MovementComponent->SimulateMove(Move);
 
 	UpdateServerState(Move);
@@ -196,7 +199,24 @@ void UGoKartMovementReplicator::Server_SendMove_Implementation(FGoKartMove Move)
 
 bool UGoKartMovementReplicator::Server_SendMove_Validate(FGoKartMove Move)
 {
-	return true; //TODO: make better validation
+	float ProposedTime = CLientSimulatedTime + Move.DeltaTime;
+
+	bool ClientNotRunningAhead = ProposedTime < GetOwner()->GetWorld()->GetGameState()->GetServerWorldTimeSeconds();
+	
+	if (!ClientNotRunningAhead)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Client Running too fast"));
+		return false;
+	}
+	
+	if (!Move.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Received invalid move."));
+		return false;
+	}
+
+	return true;
+	
 }
 
 void UGoKartMovementReplicator::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const

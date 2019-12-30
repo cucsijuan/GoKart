@@ -70,6 +70,8 @@ private:
 
 	FVector ClientStartVelocity;
 
+	float CLientSimulatedTime;
+
 	void ClientTick(float DeltaTime);
 
 	void InterpolateLocation(const FHermiteCubicSpline& Spline, float LerpRatio);
