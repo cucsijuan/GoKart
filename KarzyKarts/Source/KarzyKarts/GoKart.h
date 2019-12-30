@@ -18,6 +18,11 @@ public:
 	AGoKart();
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UGoKartMovementComponent* MovementComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UGoKartMovementReplicator* MovementReplicator;
+
 	virtual void BeginPlay() override;
 	
 public:	
@@ -26,10 +31,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	UGoKartMovementComponent* MovementComponent;
-	UPROPERTY(VisibleAnywhere)
-	UGoKartMovementReplicator* MovementReplicator;
+	
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);

@@ -52,6 +52,9 @@ protected:
 
 private:
 	UPROPERTY()
+	USceneComponent* MeshOffetRoot;
+	
+	UPROPERTY()
 	UGoKartMovementComponent* MovementComponent;
 
 	UPROPERTY(ReplicatedUsing = OnRep_ServerState)
@@ -74,6 +77,9 @@ private:
 	void InterpolateVelocity(const FHermiteCubicSpline& Spline, float LerpRatio);
 
 	void InterpolateRotation(float LerpRatio);
+
+	UFUNCTION(BlueprintCallable)
+	void SetMeshOffsetRoot(USceneComponent* Root) { MeshOffetRoot = Root; }
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_SendMove(FGoKartMove Move);
